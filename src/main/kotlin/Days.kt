@@ -1,3 +1,5 @@
+import java.io.File
+
 enum class DayPart {
     ONE,
     TWO
@@ -8,7 +10,7 @@ const val NUMBER_OF_DAYS = 25
 typealias DayNumber = Int
 typealias SolutionReturnType = String
 
-class Days {
+class Days() {
     private val days: MutableList<Day> = mutableListOf()
 
     fun register(day: Day) {
@@ -26,12 +28,26 @@ class Days {
     }
 }
 
-open class Day(val number: DayNumber) {
+open class Day(val number: DayNumber, private val testing: Boolean = false) {
     open fun part1(): SolutionReturnType {
         return "Part ${DayPart.ONE} of day $number is NOT implemented"
     }
 
     open fun part2(): SolutionReturnType {
         return "Part ${DayPart.TWO}  of day $number is NOT implemented"
+    }
+
+    private fun filePathToResources(): String {
+        return "src/main/resources"
+    }
+
+    fun getInputFile(part: DayPart): File {
+        val suffix = if (testing) "_test" else ""
+        val filename = "DAY_${number}_PART_${part}${suffix}.txt"
+        return File("${filePathToResources()}/inputs/$filename")
+    }
+
+    fun readLines(part: DayPart): List<String> {
+        return getInputFile(part).readLines()
     }
 }

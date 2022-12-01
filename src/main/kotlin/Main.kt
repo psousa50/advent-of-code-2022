@@ -8,9 +8,10 @@ fun main(args: Array<String>) {
         2 -> DayPart.TWO
         else -> throw RuntimeException("Invalid Part Number")
     }
+    val testing = args.size > 2 && args[2] == "test"
 
     val days = Days()
-    days.register(Day1())
+    days.register(Day1(testing))
 
     println("Starting day $day, part $part")
     val result: String = days.run(day, part)
