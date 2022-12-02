@@ -15,10 +15,14 @@ repositories {
 }
 
 dependencies {
+    implementation("io.arrow-kt:arrow-core:1.1.3")
+
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-json-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-property:$kotestVersion")
+
+    testImplementation("io.kotest.extensions:kotest-assertions-arrow:1.3.0")
 
     testImplementation(kotlin("test"))
 }

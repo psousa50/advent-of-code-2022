@@ -1,3 +1,4 @@
+import arrow.core.flatMap
 import java.lang.RuntimeException
 
 fun main(args: Array<String>) {
@@ -16,7 +17,7 @@ fun main(args: Array<String>) {
 
     val line = "======================================="
     println("$line START:  Day $day, part $part")
-    val result: String = days.run(day, part)
+    val result = days.run(day, part).map { it.toString() }
     println("$line RESULT: $result")
     println("$line END")
 

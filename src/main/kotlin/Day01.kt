@@ -1,11 +1,13 @@
+import arrow.core.right
+
 class Day01(testing: Boolean = false) : Day(1, testing) {
 
     override fun part1(): SolutionReturnType =
-        getElvesCalories().max().toString()
+        getElvesCalories().max().right()
 
 
     override fun part2(): SolutionReturnType {
-        return getElvesCalories().sortedDescending().take(3).sum().toString()
+        return getElvesCalories().sortedDescending().take(3).sum().right()
     }
 
     private fun getElvesCalories(): List<Int> =

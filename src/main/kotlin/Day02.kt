@@ -1,6 +1,7 @@
+import arrow.core.right
 import java.lang.RuntimeException
 
-enum class GameChoices {
+enum class GameMoves {
     ROCK,
     PAPER,
     SCISSOR
@@ -14,20 +15,20 @@ enum class GameOutcomes {
 
 fun playerMoves(letter: Char, choices: String) =
     when (letter) {
-        choices[0] -> GameChoices.ROCK
-        choices[1] -> GameChoices.PAPER
-        choices[2] -> GameChoices.SCISSOR
+        choices[0] -> GameMoves.ROCK
+        choices[1] -> GameMoves.PAPER
+        choices[2] -> GameMoves.SCISSOR
         else -> throw RuntimeException("Invalid move: ($letter)")
     }
 
 fun playerOneMoves(letter: Char) = playerMoves(letter, "ABC")
 fun playerTwoMoves(letter: Char) = playerMoves(letter, "XYZ")
 
-fun p2ChoiceScore(move: GameChoices) =
+fun p2ChoiceScore(move: GameMoves) =
     when (move) {
-        GameChoices.ROCK -> 1
-        GameChoices.PAPER -> 2
-        GameChoices.SCISSOR -> 3
+        GameMoves.ROCK -> 1
+        GameMoves.PAPER -> 2
+        GameMoves.SCISSOR -> 3
     }
 
 fun outcomeScore(outcome: GameOutcomes) =
@@ -38,16 +39,19 @@ fun outcomeScore(outcome: GameOutcomes) =
     }
 
 
-fun gameOutcome(p1Move: GameChoices, p2Move: GameChoices) =
+fun gameOutcome(p1Move: GameMoves, p2Move: GameMoves) =
     if (p1Move == p2Move)
         GameOutcomes.DRAW
     else when (Pair(p1Move, p2Move)) {
-        Pair(GameChoices.ROCK, GameChoices.SCISSOR) -> GameOutcomes.WIN
-        Pair(GameChoices.PAPER, GameChoices.ROCK) -> GameOutcomes.WIN
-        Pair(GameChoices.SCISSOR, GameChoices.PAPER) -> GameOutcomes.WIN
+        Pair(GameMoves.ROCK, GameMoves.SCISSOR) -> GameOutcomes.WIN
+        Pair(GameMoves.PAPER, GameMoves.ROCK) -> GameOutcomes.WIN
+        Pair(GameMoves.SCISSOR, GameMoves.PAPER) -> GameOutcomes.WIN
         else -> GameOutcomes.LOST
     }
 
+fun guessPlayer2Move(p1Move: GameMoves, desiredOutcome: GameOutcomes): GameMoves {
+    return GameMoves.SCISSOR
+}
 class Day02(testing: Boolean = false) : Day(2, testing) {
     override fun part1(): SolutionReturnType {
         val score = getInputFile(DayPart.ONE).useLines { lines ->
@@ -59,11 +63,6 @@ class Day02(testing: Boolean = false) : Day(2, testing) {
                 score + p2ChoiceScore(p2Move)+ outcomeScore(gameOutcome(p2Move, p1Move))
             }
         }
-        return score.toString()
+        return score.right()
     }
 }
-
-//   R P S
-// R d l w
-// P w d l
-// S l w d
