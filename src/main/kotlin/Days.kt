@@ -43,7 +43,7 @@ open class Day(val number: DayNumber, private val testing: Boolean = false) {
 
     fun getInputFile(part: DayPart): File {
         val suffix = if (testing) "_test" else ""
-        val filename = "DAY_${number}_PART_${part}${suffix}.txt"
+        val filename = "DAY_${"%02d".format(number)}_PART_${part}${suffix}.txt"
         return File("${filePathToResources()}/inputs/$filename")
     }
 

@@ -11,11 +11,14 @@ fun main(args: Array<String>) {
     val testing = args.size > 2 && args[2] == "test"
 
     val days = Days()
-    days.register(Day1(testing))
+    days.register(Day01(testing))
+    days.register(Day02(testing))
 
-    println("Starting day $day, part $part")
+    val line = "======================================="
+    println("$line START:  Day $day, part $part")
     val result: String = days.run(day, part)
-    println(result)
+    println("$line RESULT: $result")
+    println("$line END")
 
 }
 

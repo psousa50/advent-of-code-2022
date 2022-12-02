@@ -1,4 +1,4 @@
-class Day1(testing: Boolean = false) : Day(1, testing) {
+class Day01(testing: Boolean = false) : Day(1, testing) {
 
     override fun part1(): SolutionReturnType =
         getElvesCalories().max().toString()
