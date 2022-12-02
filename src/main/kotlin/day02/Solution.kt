@@ -1,3 +1,9 @@
+package day02
+
+import Day
+import Solution
+import SolutionInput
+import SolutionResult
 import arrow.core.right
 import java.lang.RuntimeException
 

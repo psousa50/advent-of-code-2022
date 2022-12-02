@@ -1,4 +1,8 @@
-import arrow.core.Either
+package day01
+
+import Day
+import Solution
+import SolutionInput
 import arrow.core.right
 
 class SolutionPart1() : Solution(1, DayPart.ONE) {

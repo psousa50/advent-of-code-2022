@@ -28,42 +28,57 @@ class AoCRunner() {
     private val days: MutableMap<Int, Day> = mutableMapOf()
 
     init {
-        register(Day01())
-        register(Day02())
+        register(day01.Day01())
+        register(day02.Day02())
     }
 
-    fun register(day: Day) {
+    private fun register(day: Day) {
         days[day.number] = day
     }
 
-    fun runAll(testing: Boolean = false) {
-        for (day in days.values) run(day, testing)
+    fun showAllResults(testing: Boolean = false) {
+        for (day in days.values) showResult(day, testing)
     }
 
-    fun run(day: Day, testing: Boolean) {
-        val input = getInputFile(day, testing).readLines()
+    private fun showResult(day: Day, testing: Boolean) {
+        val input = getInputFile(day.number, testing).readLines()
         showResult(day.part1, input)
         showResult(day.part2, input)
     }
 
-    fun runPart(dayNumber: DayNumber, dayPart: DayPart, testing: Boolean = false): SolutionResult {
-        return Either.fromNullable(days[dayNumber])
-            .flatMap {
-                val input = getInputFile(it, testing).readLines()
+    fun showResult(dayNumber: DayNumber, dayPart: DayPart, testing: Boolean = false) {
+        daySolutionPart(dayNumber, dayPart).fold(
+            {
+                println(it)
+            },
+            {
+                val input = getInputFile(dayNumber, testing).readLines()
+                showResult(it, input)
+            }
+        )
+    }
+
+    fun runPart(dayNumber: DayNumber, dayPart: DayPart, testing: Boolean = false) : SolutionResult {
+        val input = getInputFile(dayNumber, testing).readLines()
+        return daySolutionPart(dayNumber, dayPart).flatMap { it.run(input) }
+    }
+
+    private fun daySolutionPart(dayNumber: DayNumber, dayPart: DayPart): Either<String, Solution> =
+        Either.fromNullable(days[dayNumber])
+            .map {
                 when (dayPart) {
-                    DayPart.ONE -> it.part1.run(input)
-                    DayPart.TWO -> it.part2.run(input)
+                    DayPart.ONE -> it.part1
+                    DayPart.TWO -> it.part2
                 }
             }.mapLeft { "Day $dayNumber is NOT implemented" }
-    }
 
     private fun filePathToResources(): String {
         return "src/main/resources"
     }
 
-    private fun getInputFile(day: Day, testing: Boolean): File {
+    private fun getInputFile(dayNumber: DayNumber, testing: Boolean): File {
         val suffix = if (testing) "_test" else ""
-        val filename = "DAY_${"%02d".format(day.number)}${suffix}.txt"
+        val filename = "DAY_${"%02d".format(dayNumber)}${suffix}.txt"
         return File("${filePathToResources()}/inputs/$filename")
     }
 
