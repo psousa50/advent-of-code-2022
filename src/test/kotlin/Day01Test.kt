@@ -5,12 +5,12 @@ import io.kotest.matchers.shouldBe
 class Day01Test : DescribeSpec({
 
     it("Day 01") {
-        Day01().part1() shouldBeRight 71502
-        Day01().part2() shouldBeRight 208191
+        AoCRunner().runPart(1, DayPart.ONE) shouldBeRight 71502
+        AoCRunner().runPart(1, DayPart.TWO) shouldBeRight 208191
     }
 
     it("Day 02") {
-        Day02().part1() shouldBeRight 14264
-        Day02().part2() shouldBeRight 12382
+        AoCRunner().runPart(2, DayPart.ONE) shouldBeRight 14264
+        AoCRunner().runPart(2, DayPart.TWO) shouldBeRight 12382
     }
 })
