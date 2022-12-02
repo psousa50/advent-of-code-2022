@@ -6,21 +6,18 @@ enum class DayPart {
     TWO
 }
 
-const val NUMBER_OF_DAYS = 25
-
 typealias DayNumber = Int
 typealias SolutionReturnType = Either<String, Int>
 
 class Days() {
-    private val days: MutableList<Day> = mutableListOf()
+    private val days: MutableMap<Int, Day> = mutableMapOf()
 
     fun register(day: Day) {
-        if (days.none { it.number == day.number })
-            days.add(day)
+        days[day.number] = day
     }
 
     fun run(dayNumber: DayNumber, dayPart: DayPart): SolutionReturnType {
-        return Either.fromNullable(days.firstOrNull { it.number == dayNumber })
+        return Either.fromNullable(days[dayNumber])
             .flatMap {
                 when (dayPart) {
                     DayPart.ONE -> it.part1()
@@ -47,9 +44,5 @@ open class Day(val number: DayNumber, private val testing: Boolean = false) {
         val suffix = if (testing) "_test" else ""
         val filename = "DAY_${"%02d".format(number)}_PART_${part}${suffix}.txt"
         return File("${filePathToResources()}/inputs/$filename")
-    }
-
-    fun readLines(part: DayPart): List<String> {
-        return getInputFile(part).readLines()
     }
 }
