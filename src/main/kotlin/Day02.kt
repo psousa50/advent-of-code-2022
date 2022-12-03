@@ -1,16 +1,14 @@
-import arrow.core.right
 import java.lang.RuntimeException
 
 class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
     override fun partOne(): SolutionResult =
-        calcScore(input) { firstLetter, secondLetter ->
-            Pair(playerOneMove(firstLetter), playerTwoMove(secondLetter))
+        calcScore(input) { _, secondLetter ->
+            playerTwoMove(secondLetter)
         }
 
     override fun partTwo(): SolutionResult =
-        calcScore(input) { firstLetter, secondLetter ->
-            val p1Move = playerOneMove(firstLetter)
-            Pair(p1Move, determinePlayer2Move(p1Move, desiredOutcome(secondLetter)))
+        calcScore(input) { p1Move, secondLetter ->
+            determinePlayer2Move(p1Move, desiredOutcome(secondLetter))
         }
 
     enum class GameMove {
@@ -27,12 +25,13 @@ class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
 
     private fun calcScore(
         input: SolutionInput,
-        movesResolver: (p1: Char, p2: Char) -> Pair<GameMove, GameMove>
+        movesResolver: (p1Move: GameMove, letter: Char) -> GameMove
     ): SolutionResult {
         val score = input.fold(0) { score, line ->
-            val p1 = line[0]
-            val p2 = line[2]
-            val (p1Move, p2Move) = movesResolver(p1, p2)
+            val firstLetter = line[0]
+            val secondLetter = line[2]
+            val p1Move = playerOneMove(firstLetter)
+            val p2Move = movesResolver(p1Move, secondLetter)
             score + player2MoveScore(p2Move) + outcomeScore(gameOutcome(p2Move, p1Move))
         }
         return score
@@ -85,5 +84,10 @@ class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
         }
 
     private fun determinePlayer2Move(p1Move: GameMove, desiredOutcome: GameOutcomes): GameMove =
-        listOf(GameMove.ROCK, GameMove.PAPER, GameMove.SCISSOR).first { gameOutcome(it, p1Move) == desiredOutcome }
+        listOf(GameMove.ROCK, GameMove.PAPER, GameMove.SCISSOR).first {
+            gameOutcome(
+                it,
+                p1Move
+            ) == desiredOutcome
+        }
 }

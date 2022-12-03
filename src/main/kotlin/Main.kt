@@ -1,8 +1,6 @@
 import java.lang.RuntimeException
 
 fun main(args: Array<String>) {
-
-
     val runAll = args[0] == "ALL"
 
     if (runAll) {
@@ -30,7 +28,7 @@ fun showResult(aoCRunner: AoCRunner, dayNumber: DayNumber, dayPart: DayPart) {
     val result = aoCRunner.runPart(dayNumber, dayPart)
     val ident = " > "
     println("$ident START:  Day $dayNumber, part $dayPart")
-    println("$ident RESULT: $result")
+    println("$ident RESULT: \u001B[32m$result\u001B[0m")
     println("$ident END")
 }
 
