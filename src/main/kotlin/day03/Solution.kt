@@ -13,9 +13,19 @@ private class SolutionPartOne : Solution(3, DayPart.ONE) {
     }
 }
 
+private class SolutionPartTwo : Solution(3, DayPart.TWO) {
+    override fun run(input: SolutionInput): SolutionResult {
+        val ruckSacks = input.map { RuckSack(it) }
+        return ruckSacks.chunked(3).map { findBadge(it) }.sumOf { itemPriority(it) }.right()
+    }
+
+    private fun findBadge(ruckSacks: List<RuckSack>): Char =
+        ruckSacks[0].items.first { ruckSacks[1].items.contains(it) && ruckSacks[2].items.contains(it) }
+}
+
 class Day03 : Day(
     SolutionPartOne(),
-    Solution(3, DayPart.TWO),
+    SolutionPartTwo(),
 )
 
 private fun itemPriority(item: Char): Int =
@@ -25,6 +35,7 @@ private fun itemPriority(item: Char): Int =
 private class RuckSack(items: String) {
     val compartment1: String
     val compartment2: String
+    val items get() = compartment1 + compartment2
 
     init {
         val l = items.length
