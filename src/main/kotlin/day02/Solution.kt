@@ -7,20 +7,24 @@ import SolutionResult
 import arrow.core.right
 import java.lang.RuntimeException
 
-class Solution02Part1() : Solution(2, DayPart.ONE) {
-    override fun run(input: SolutionInput) = calcScore(input) { p1, p2 -> Pair(playerOneMove(p1), playerTwoMove(p2)) }
+class SolutionPart1() : Solution(2, DayPart.ONE) {
+    override fun run(input: SolutionInput) =
+        calcScore(input) { firstLetter, secondLetter ->
+            Pair(playerOneMove(firstLetter), playerTwoMove(secondLetter))
+        }
 }
 
-class Solution02Part2() : Solution(2, DayPart.TWO) {
-    override fun run(input: SolutionInput) = calcScore(input) { p1, p2 ->
-        val p1Move = playerOneMove(p1)
-        Pair(p1Move, determinePlayer2Move(p1Move, desiredOutcome(p2)))
-    }
+class SolutionPart2() : Solution(2, DayPart.TWO) {
+    override fun run(input: SolutionInput) =
+        calcScore(input) { firstLetter, secondLetter ->
+            val p1Move = playerOneMove(firstLetter)
+            Pair(p1Move, determinePlayer2Move(p1Move, desiredOutcome(secondLetter)))
+        }
 }
 
 class Day02() : Day(
-    Solution02Part1(),
-    Solution02Part2(),
+    SolutionPart1(),
+    SolutionPart2(),
 )
 
 enum class GameMove {
@@ -57,6 +61,7 @@ private fun playerMoves(letter: Char, choices: String) =
     }
 
 private fun playerOneMove(letter: Char) = playerMoves(letter, "ABC")
+
 private fun playerTwoMove(letter: Char) = playerMoves(letter, "XYZ")
 
 private fun player2MoveScore(move: GameMove) =
