@@ -5,11 +5,11 @@ import Solution
 import SolutionInput
 import arrow.core.right
 
-class SolutionPart1() : Solution(1, DayPart.ONE) {
+private class SolutionPart1() : Solution(1, DayPart.ONE) {
     override fun run(input: SolutionInput) = getElvesCalories(input).max().right()
 }
 
-class SolutionPart2() : Solution(1, DayPart.TWO) {
+private class SolutionPart2() : Solution(1, DayPart.TWO) {
     override fun run(input: SolutionInput) = getElvesCalories(input).sortedDescending().take(3).sum().right()
 }
 

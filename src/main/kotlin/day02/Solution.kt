@@ -7,14 +7,14 @@ import SolutionResult
 import arrow.core.right
 import java.lang.RuntimeException
 
-class SolutionPart1() : Solution(2, DayPart.ONE) {
+private class SolutionPart1() : Solution(2, DayPart.ONE) {
     override fun run(input: SolutionInput) =
         calcScore(input) { firstLetter, secondLetter ->
             Pair(playerOneMove(firstLetter), playerTwoMove(secondLetter))
         }
 }
 
-class SolutionPart2() : Solution(2, DayPart.TWO) {
+private class SolutionPart2() : Solution(2, DayPart.TWO) {
     override fun run(input: SolutionInput) =
         calcScore(input) { firstLetter, secondLetter ->
             val p1Move = playerOneMove(firstLetter)

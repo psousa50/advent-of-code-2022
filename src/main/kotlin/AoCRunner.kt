@@ -30,6 +30,7 @@ class AoCRunner() {
     init {
         register(day01.Day01())
         register(day02.Day02())
+        register(day03.Day03())
     }
 
     private fun register(day: Day) {
