@@ -35,7 +35,7 @@ class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
             val (p1Move, p2Move) = movesResolver(p1, p2)
             score + player2MoveScore(p2Move) + outcomeScore(gameOutcome(p2Move, p1Move))
         }
-        return score.right()
+        return score
     }
 
     private fun playerMoves(letter: Char, choices: String) =

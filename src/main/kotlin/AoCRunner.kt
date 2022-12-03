@@ -1,5 +1,4 @@
-import arrow.core.Either
-import arrow.core.flatMap
+import java.lang.RuntimeException
 
 class AoCRunner(testing: Boolean = false) {
     private val days: MutableMap<Int, DaySolutions> = mutableMapOf()
@@ -14,14 +13,13 @@ class AoCRunner(testing: Boolean = false) {
         days[day.dayNumber] = day
     }
 
-    fun runPart(dayNumber: DayNumber, dayPart: DayPart): SolutionResult =
-        Either.fromNullable(days[dayNumber])
-            .flatMap {
-                when (dayPart) {
-                    DayPart.ONE -> it.partOne()
-                    DayPart.TWO -> it.partTwo()
-                }
-            }.mapLeft { "Day $dayNumber is NOT implemented" }
+    fun runPart(dayNumber: DayNumber, dayPart: DayPart): SolutionResult {
+        val day = days[dayNumber] ?: throw RuntimeException("Day $dayNumber is NOT implemented")
+        return when (dayPart) {
+            DayPart.ONE -> day.partOne()
+            DayPart.TWO -> day.partTwo()
+        }
+    }
 
-    fun allDays() = days.values.sortedBy { it.dayNumber }
+    fun allDays() = days.values
 }

@@ -1,20 +1,21 @@
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 
 class SolutionsTest : DescribeSpec({
 
     it("Day 01") {
-        Day01().partOne() shouldBeRight 71502
-        Day01().partTwo() shouldBeRight 208191
+        Day01().partOne() shouldBe 71502
+        Day01().partTwo() shouldBe 208191
     }
 
     it("Day 02") {
-        Day02().partOne() shouldBeRight 14264
-        Day02().partTwo() shouldBeRight 12382
+        Day02().partOne() shouldBe 14264
+        Day02().partTwo() shouldBe 12382
     }
 
     it("Day 03") {
-        Day03().partOne() shouldBeRight 7737
-        Day03().partTwo() shouldBeRight 2697
+        Day03().partOne() shouldBe 7737
+        Day03().partTwo() shouldBe 2697
     }
 })

@@ -1,5 +1,6 @@
 import arrow.core.left
 import java.io.File
+import java.lang.RuntimeException
 
 open class DaySolutions(val dayNumber: DayNumber, private val testing: Boolean = false) {
     val input: SolutionInput
@@ -9,11 +10,11 @@ open class DaySolutions(val dayNumber: DayNumber, private val testing: Boolean =
     }
 
     open fun partOne(): SolutionResult {
-        return "Part ${DayPart.ONE} of day $dayNumber is NOT implemented".left()
+        throw RuntimeException("Part ${DayPart.ONE} of day $dayNumber is NOT implemented")
     }
 
     open fun partTwo(): SolutionResult {
-        return "Part ${DayPart.ONE} of day $dayNumber is NOT implemented".left()
+        throw RuntimeException("Part ${DayPart.TWO} of day $dayNumber is NOT implemented")
     }
 
     private fun filePathToResources(): String {

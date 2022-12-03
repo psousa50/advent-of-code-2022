@@ -7,5 +7,5 @@ enum class DayPart {
 typealias DayNumber = Int
 
 typealias SolutionInput = List<String>
-typealias SolutionResult = Either<String, Int>
+typealias SolutionResult = Int
 

@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
 
     if (runAll) {
         val aoCRunner = AoCRunner()
-        for (day in aoCRunner.allDays()) {
+        for (day in aoCRunner.allDays().sortedBy { it.dayNumber }) {
             showResult(aoCRunner, day.dayNumber, DayPart.ONE)
             showResult(aoCRunner, day.dayNumber, DayPart.TWO)
         }
@@ -30,8 +30,7 @@ fun showResult(aoCRunner: AoCRunner, dayNumber: DayNumber, dayPart: DayPart) {
     val result = aoCRunner.runPart(dayNumber, dayPart)
     val ident = " > "
     println("$ident START:  Day $dayNumber, part $dayPart")
-    val output = result.fold({ "\u001B[41m$it\u001B[0m" }, { "\u001B[32m$it\u001B[0m" })
-    println("$ident RESULT: $output")
+    println("$ident RESULT: $result")
     println("$ident END")
 }
 
