@@ -1,5 +1,3 @@
-import arrow.core.Either
-
 enum class DayPart {
     ONE,
     TWO

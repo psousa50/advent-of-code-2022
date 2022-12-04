@@ -1,5 +1,3 @@
-import arrow.core.right
-
 class Day03(testing: Boolean = false) : DaySolutions(3, testing) {
     override fun partOne(): SolutionResult =
         input.map { commonItem(it) }.sumOf { itemPriority(it) }

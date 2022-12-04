@@ -1,5 +1,3 @@
-import arrow.core.right
-
 class Day01(testing: Boolean = false) : DaySolutions(1, testing) {
     override fun partOne(): SolutionResult =
         getElvesCalories(input).max()
