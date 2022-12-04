@@ -16,6 +16,12 @@ open class DaySolutions(val dayNumber: DayNumber, private val testing: Boolean =
         throw RuntimeException("Part ${DayPart.TWO} of day $dayNumber is NOT implemented")
     }
 
+    fun part(dayPart: DayPart) =
+        when (dayPart) {
+            DayPart.ONE -> partOne()
+            DayPart.TWO -> partTwo()
+        }
+
     private fun filePathToResources(): String {
         return "src/main/resources"
     }

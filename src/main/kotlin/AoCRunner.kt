@@ -14,13 +14,8 @@ class AoCRunner(testing: Boolean = false) {
         days[day.dayNumber] = day
     }
 
-    fun runPart(dayNumber: DayNumber, dayPart: DayPart): SolutionResult {
-        val day = days[dayNumber] ?: throw RuntimeException("Day $dayNumber is NOT implemented")
-        return when (dayPart) {
-            DayPart.ONE -> day.partOne()
-            DayPart.TWO -> day.partTwo()
-        }
-    }
+    fun runPart(dayNumber: DayNumber, dayPart: DayPart): SolutionResult =
+        days[dayNumber]?.part(dayPart) ?: throw RuntimeException("Day $dayNumber is NOT implemented")
 
     fun allDays() = days.values
 }
