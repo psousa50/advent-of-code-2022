@@ -1,5 +1,3 @@
-import java.lang.RuntimeException
-
 fun main(args: Array<String>) {
     val runAll = args[0] == "ALL"
 
@@ -14,7 +12,7 @@ fun main(args: Array<String>) {
         val part = when (args[1].toInt()) {
             1 -> DayPart.ONE
             2 -> DayPart.TWO
-            else -> throw RuntimeException("Invalid Part Number")
+            else -> throw NotImplementedError("Invalid Part Number")
         }
         val testing = args.size > 2 && args[2] == "test"
 

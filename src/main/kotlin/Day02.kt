@@ -1,5 +1,3 @@
-import java.lang.RuntimeException
-
 class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
     override fun partOne(): SolutionResult =
         calcScore(input) { _, secondLetter ->
@@ -34,7 +32,7 @@ class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
             val p2Move = movesResolver(p1Move, secondLetter)
             score + player2MoveScore(p2Move) + outcomeScore(gameOutcome(p2Move, p1Move))
         }
-        return score
+        return score.toString()
     }
 
     private fun playerMoves(letter: Char, choices: String) =
@@ -80,7 +78,7 @@ class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
             'X' -> GameOutcomes.LOST
             'Y' -> GameOutcomes.DRAW
             'Z' -> GameOutcomes.WIN
-            else -> throw RuntimeException("Invalid outcome: ($letter)")
+            else -> throw NotImplementedError("Invalid outcome: ($letter)")
         }
 
     private fun determinePlayer2Move(p1Move: GameMove, desiredOutcome: GameOutcomes): GameMove =

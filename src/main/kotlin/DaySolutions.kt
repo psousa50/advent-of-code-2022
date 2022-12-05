@@ -1,6 +1,4 @@
 import java.io.File
-import java.lang.RuntimeException
-
 open class DaySolutions(val dayNumber: DayNumber, private val testing: Boolean = false) {
     val input: SolutionInput
 
@@ -9,11 +7,11 @@ open class DaySolutions(val dayNumber: DayNumber, private val testing: Boolean =
     }
 
     open fun partOne(): SolutionResult {
-        throw RuntimeException("Part ${DayPart.ONE} of day $dayNumber is NOT implemented")
+        throw NotImplementedError("Part ${DayPart.ONE} of day $dayNumber is NOT implemented")
     }
 
     open fun partTwo(): SolutionResult {
-        throw RuntimeException("Part ${DayPart.TWO} of day $dayNumber is NOT implemented")
+        throw NotImplementedError("Part ${DayPart.TWO} of day $dayNumber is NOT implemented")
     }
 
     fun part(dayPart: DayPart) =

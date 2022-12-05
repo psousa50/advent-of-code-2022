@@ -5,5 +5,5 @@ enum class DayPart {
 typealias DayNumber = Int
 
 typealias SolutionInput = List<String>
-typealias SolutionResult = Int
+typealias SolutionResult = String
 

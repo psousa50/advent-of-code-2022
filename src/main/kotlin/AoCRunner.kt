@@ -1,5 +1,3 @@
-import java.lang.RuntimeException
-
 class AoCRunner(testing: Boolean = false) {
     private val days: MutableMap<Int, DaySolutions> = mutableMapOf()
 
@@ -8,6 +6,7 @@ class AoCRunner(testing: Boolean = false) {
         register(Day02(testing))
         register(Day03(testing))
         register(Day04(testing))
+        register(Day05(testing))
     }
 
     private fun register(day: DaySolutions) {
@@ -15,7 +14,7 @@ class AoCRunner(testing: Boolean = false) {
     }
 
     fun runPart(dayNumber: DayNumber, dayPart: DayPart): SolutionResult =
-        days[dayNumber]?.part(dayPart) ?: throw RuntimeException("Day $dayNumber is NOT implemented")
+        days[dayNumber]?.part(dayPart) ?: throw NotImplementedError("Day $dayNumber is NOT implemented")
 
     fun allDays() = days.values
 }

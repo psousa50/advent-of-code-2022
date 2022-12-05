@@ -1,9 +1,9 @@
 class Day04(testing: Boolean = false) : DaySolutions(4, testing) {
     override fun partOne(): SolutionResult =
-        countAssignmentsInteractions(input) { containsOrIsContainedBy(it) }
+        countAssignmentsInteractions(input) { containsOrIsContainedBy(it) }.toString()
 
     override fun partTwo(): SolutionResult =
-        countAssignmentsInteractions(input) { intercepts(it) }
+        countAssignmentsInteractions(input) { intercepts(it) }.toString()
 
     private fun countAssignmentsInteractions(
         input: SolutionInput,
