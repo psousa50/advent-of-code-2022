@@ -25,6 +25,6 @@ class SolutionsTest : DescribeSpec({
 
     it("Day 05") {
         Day05().partOne() shouldBe "FWSHSPJWM"
-//        Day04().partTwo() shouldBe "PWPWHGFZS"
+        Day05().partTwo() shouldBe "PWPWHGFZS"
     }
 })

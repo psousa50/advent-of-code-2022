@@ -1,13 +1,21 @@
 class Day05(testing: Boolean = false) : DaySolutions(5, testing) {
-    override fun partOne(): SolutionResult =
-        input
-            .splitOnBlankLines { (stacksInput, movesInput) ->
-                applyMoves(parseStacks(stacksInput), parseMoves(movesInput))
-            }
-            .map { stack ->stack.first() }.joinToString("")
+    override fun partOne() = moveCrates(input, pickMultipleCratesAtOnce = false)
 
-    private fun <A> List<String>.splitOnBlankLines(process: (lines: List<List<String>>) -> A): A {
-        val lineGroups = this.fold(listOf(listOf<String>())) { lists, line ->
+    override fun partTwo() = moveCrates(input, pickMultipleCratesAtOnce = true)
+
+    private fun moveCrates(input: SolutionInput, pickMultipleCratesAtOnce: Boolean) =
+        input.processGroups { (stacksInput, movesInput) ->
+            applyMoves(
+                parseStacks(stacksInput),
+                parseMoves(movesInput),
+                pickMultipleCratesAtOnce,
+            )
+        }
+            .map { stack -> stack.first() }.joinToString("")
+
+    private fun <T> List<String>.processGroups(process: (lines: List<List<String>>) -> T): T {
+        val emptyLineGroups: List<List<String>> = listOf(listOf())
+        val lineGroups = this.fold(emptyLineGroups) { lists, line ->
             when {
                 line.isEmpty() -> lists + listOf(listOf())
                 else -> lists.dropLast(1) + listOf(lists.last() + line)
@@ -16,16 +24,22 @@ class Day05(testing: Boolean = false) : DaySolutions(5, testing) {
         return process(lineGroups)
     }
 
-    private fun parseStacks(input: List<String>): List<List<Char>> {
-        val crateLines = input
+    private fun parseStacks(input: List<String>): List<Stack> {
+        val cratesByLines = input
             .dropLast(1)
             .reversed()
             .map { it.chunked(4).map { s -> s[1] } }
 
-        val emptyStacks = List(crateLines.first().size) { listOf<Char>() }
-        return crateLines.fold(emptyStacks) { lists, line ->
+        return transpose(cratesByLines)
+            .map { it.filter { c -> isCrate(c) } }
+            .map { it.reversed() }
+    }
+
+    private fun transpose(cratesByLines: List<Stack>): List<Stack> {
+        val emptyStacks = List(cratesByLines.first().size) { emptyStack() }
+        return cratesByLines.fold(emptyStacks) { lists, line ->
             lists.mapIndexed { i, stack -> stack + line[i] }
-        }.map { it.filter { c -> isCrate(c) } }.map { it.reversed() }
+        }
     }
 
     private fun isCrate(c: Char) = c.isUpperCase()
@@ -36,19 +50,30 @@ class Day05(testing: Boolean = false) : DaySolutions(5, testing) {
             .map { Move(it[0].toInt(), it[1].toInt(), it[2].toInt()) }
     }
 
-    private fun applyMoves(stacks: List<List<Char>>, moves: List<Move>): List<List<Char>> {
-        return moves.fold(stacks) { newStacks, move ->
+    private fun applyMoves(
+        stacks: List<Stack>,
+        moves: List<Move>,
+        pickMultipleCratesAtOnce: Boolean
+    ): List<Stack> =
+        moves.fold(stacks) { newStacks, move ->
             newStacks.mapIndexed() { i, stack ->
                 when (i + 1) {
                     move.from -> stack.drop(move.count)
-                    move.to -> newStacks[move.from - 1].take(move.count).reversed() + stack
+                    move.to -> newStacks[move.from - 1]
+                        .take(move.count)
+                        .direction(reversed = !pickMultipleCratesAtOnce) + stack
+
                     else -> stack
                 }
             }
         }
-    }
 }
 
+
+private fun <E> List<E>.direction(reversed: Boolean): List<E> =
+    if (reversed) this.reversed() else this
+
+private fun emptyStack() = listOf<Char>()
 
 data class Move(
     val count: Int,
@@ -56,3 +81,4 @@ data class Move(
     val to: Int
 )
 
+typealias Stack = List<Char>

@@ -1,5 +1,5 @@
 class Day01(testing: Boolean = false) : DaySolutions(1, testing) {
-    override fun partOne(): SolutionResult =
+    override fun partOne() =
         elvesCalories(input).max().toString()
 
     override fun partTwo(): SolutionResult =
