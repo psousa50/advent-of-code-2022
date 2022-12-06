@@ -7,6 +7,7 @@ class AoCRunner(testing: Boolean = false) {
         register(Day03(testing))
         register(Day04(testing))
         register(Day05(testing))
+        register(Day06(testing))
     }
 
     private fun register(day: DaySolutions) {
