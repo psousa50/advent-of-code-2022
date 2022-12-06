@@ -6,10 +6,5 @@ class Day01(testing: Boolean = false) : DaySolutions(1, testing) {
         elvesCalories(input).sortedDescending().take(3).sum().toString()
 
     private fun elvesCalories(input: SolutionInput): List<Int> =
-        input.fold(listOf(0)) { sums, value ->
-            when {
-                value.isEmpty() -> sums + 0
-                else -> sums.dropLast(1) + (sums.last() + value.toInt())
-            }
-        }.filter { it > 0 }
+        input.splitByBlankLine { g -> g.map { l -> l.sumOf { it.toInt() } } }
 }

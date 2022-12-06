@@ -4,25 +4,13 @@ class Day05(testing: Boolean = false) : DaySolutions(5, testing) {
     override fun partTwo() = moveCrates(input, pickMultipleCratesAtOnce = true)
 
     private fun moveCrates(input: SolutionInput, pickMultipleCratesAtOnce: Boolean) =
-        input.processGroups { (stacksInput, movesInput) ->
+        input.splitByBlankLine { (stacksInput, movesInput) ->
             applyMoves(
                 parseStacks(stacksInput),
                 parseMoves(movesInput),
                 pickMultipleCratesAtOnce,
             )
-        }
-            .map { stack -> stack.first() }.joinToString("")
-
-    private fun <T> List<String>.processGroups(process: (lines: List<List<String>>) -> T): T {
-        val emptyLineGroups: List<List<String>> = listOf(listOf())
-        val lineGroups = this.fold(emptyLineGroups) { lists, line ->
-            when {
-                line.isEmpty() -> lists + listOf(listOf())
-                else -> lists.dropLast(1) + listOf(lists.last() + line)
-            }
-        }
-        return process(lineGroups)
-    }
+        }.map { stack -> stack.first() }.joinToString("")
 
     private fun parseStacks(input: List<String>): List<Stack> {
         val cratesByLines = input
