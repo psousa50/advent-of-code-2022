@@ -4,12 +4,12 @@ class Day06(testing: Boolean = false) : DaySolutions(6, testing) {
 
     override fun partTwo(): SolutionResult = findMarker(14)
 
-    private fun findMarker(windowSize: Int): String =
+    private fun findMarker(windowSize: Int) =
         input.first()
             .windowedSequence(windowSize)
             .map { it.toSet() }
             .takeWhile { it.size != windowSize }
             .count()
             .plus(windowSize)
-            .toString()
+            .bind()
 }

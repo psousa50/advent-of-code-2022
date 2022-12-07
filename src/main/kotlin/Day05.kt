@@ -10,7 +10,7 @@ class Day05(testing: Boolean = false) : DaySolutions(5, testing) {
                 parseMoves(movesInput),
                 pickMultipleCratesAtOnce,
             )
-        }.map { stack -> stack.first() }.joinToString("")
+        }.map { stack -> stack.first() }.joinToString("").bind()
 
     private fun parseStacks(input: List<String>): List<Stack> {
         val cratesByLines = input

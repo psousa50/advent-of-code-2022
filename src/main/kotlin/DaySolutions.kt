@@ -29,5 +29,4 @@ open class DaySolutions(val dayNumber: DayNumber, private val testing: Boolean =
         val filename = "DAY_${"%02d".format(dayNumber)}${suffix}.txt"
         return File("${filePathToResources()}/inputs/$filename")
     }
-
 }

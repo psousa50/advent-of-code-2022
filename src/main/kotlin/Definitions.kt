@@ -5,5 +5,13 @@ enum class DayPart {
 typealias DayNumber = Int
 
 typealias SolutionInput = List<String>
-typealias SolutionResult = String
+
+data class SolutionResult(val value: String) {
+    val intValue get() = value.toInt()
+}
+
+fun Int.bind() = SolutionResult(this.toString())
+
+fun String.bind() = SolutionResult(this)
+
 

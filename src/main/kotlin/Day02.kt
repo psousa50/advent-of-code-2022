@@ -32,7 +32,7 @@ class Day02(testing: Boolean = false) : DaySolutions(2, testing) {
             val p2Move = movesResolver(p1Move, secondLetter)
             score + player2MoveScore(p2Move) + outcomeScore(gameOutcome(p2Move, p1Move))
         }
-        return score.toString()
+        return score.bind()
     }
 
     private fun playerMoves(letter: Char, choices: String) =

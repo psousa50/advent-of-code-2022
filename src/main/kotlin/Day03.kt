@@ -1,9 +1,9 @@
 class Day03(testing: Boolean = false) : DaySolutions(3, testing) {
     override fun partOne(): SolutionResult =
-        input.map { commonItem(it) }.sumOf { itemPriority(it) }.toString()
+        input.map { commonItem(it) }.sumOf { itemPriority(it) }.bind()
 
     override fun partTwo(): SolutionResult =
-        input.chunked(3).map { findBadge(it) }.sumOf { itemPriority(it) }.toString()
+        input.chunked(3).map { findBadge(it) }.sumOf { itemPriority(it) }.bind()
 
     private fun itemPriority(item: Char): Int =
         item.code + 1 - if (item.isLowerCase()) 'a'.code else ('A'.code - 26)
