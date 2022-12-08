@@ -10,6 +10,23 @@ class Day07(testing: Boolean = false) : DaySolutions(7, testing) {
             .sumOf { it.size }
             .bind()
 
+    override fun partTwo(): SolutionResult {
+        val fs = input
+            .map { parse(it) }
+            .fold(FileSystem()) { fs, item -> process(fs, item) }
+
+        val spaceNeeded = 30000000- (70000000 - fs.totalSpace)
+
+        return fs
+            .allItems()
+            .filter { it is Directory }
+            .filter { it.size >= spaceNeeded }
+            .toList().minByOrNull { it.size }!!
+            .size
+            .bind()
+
+    }
+
     private fun process(fileSystem: FileSystem, item: ParsedItem): FileSystem {
         when (item) {
             is CdCommand -> fileSystem.cd(item.directory)
@@ -61,6 +78,7 @@ data class File(override val name: String, override val size: Int) : FileSystemI
 class FileSystem {
     private val root: Directory = Directory("/")
     private var currentDirectory: Directory = root
+    val totalSpace get() = root.size
 
     fun cd(dir: String) {
         currentDirectory = when (dir) {
