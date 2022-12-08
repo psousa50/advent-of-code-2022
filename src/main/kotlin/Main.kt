@@ -24,9 +24,6 @@ fun main(args: Array<String>) {
 
 fun showResult(aoCRunner: AoCRunner, dayNumber: DayNumber, dayPart: DayPart) {
     val result = aoCRunner.runPart(dayNumber, dayPart)
-    val ident = " > "
-    println("$ident START:  Day $dayNumber, part $dayPart")
-    println("$ident RESULT: \u001B[32m$result\u001B[0m")
-    println("$ident END")
+    println("Day $dayNumber, part $dayPart: \u001B[32m$result\u001B[0m")
 }
 
