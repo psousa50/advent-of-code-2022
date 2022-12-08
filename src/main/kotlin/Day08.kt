@@ -12,14 +12,13 @@ class Day08(testing: Boolean = false) : DaySolutions(8, testing) {
                 .map { scenicScore(it) }
                 .max()
                 .bind()
-
         }
 
     private class Grid(val lines: List<String>) {
-
         val gridHeight get() = lines.size
         val gridWidth get() = lines[0].length
-        fun allTrees(): Sequence<Tree> =
+
+        fun allTrees() =
             sequence {
                 for (r in 0 until gridHeight)
                     for (c in 0 until gridWidth)
@@ -36,16 +35,11 @@ class Day08(testing: Boolean = false) : DaySolutions(8, testing) {
                 )
             }
 
-        fun treeAt(row: Int, column: Int): Tree =
+        fun treeAt(row: Int, column: Int) =
             Tree(lines[row][column].digitToInt(), row, column)
 
-        private fun atEdge(tree: Tree) =
-            with(tree) {
-                row == 0 || row == gridHeight - 1 || column == 0 || column == gridWidth - 1
-            }
-
         fun isVisible(tree: Tree) =
-            atEdge(tree) || pathsToEdge(tree).any { path ->
+            pathsToEdge(tree).any { path ->
                 path.all { it.height < tree.height }
             }
 
@@ -54,10 +48,10 @@ class Day08(testing: Boolean = false) : DaySolutions(8, testing) {
                 .map { countVisible(tree, it) }
                 .reduce { product, v -> product * v }
 
-        private fun countVisible(tree: Tree, path: List<Tree>): Int {
-            val index = path.indexOfFirst { it.height >= tree.height }
-            return if (index < 0) path.size else index + 1
-        }
+        private fun countVisible(tree: Tree, path: List<Tree>): Int =
+            with(path.indexOfFirst { it.height >= tree.height }) {
+                if (this < 0) path.size else this + 1
+            }
     }
 }
 
