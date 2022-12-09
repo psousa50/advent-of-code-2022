@@ -3,14 +3,20 @@ import kotlin.math.sign
 
 class Day09(testing: Boolean = false) : DaySolutions(9, testing) {
     override fun partOne(): SolutionResult =
+        moveRope(List(2) {origin})
+
+    override fun partTwo(): SolutionResult =
+        moveRope(List(10) {origin})
+
+    private fun moveRope(knots: List<Point>): SolutionResult =
         input
             .map { parse(it) }
-            .fold(Rope()) { rope, motion ->
-                rope.move(motion)
-            }
+            .fold(Rope(knots)) { rope, motion -> rope.move(motion) }
             .visited
             .count()
             .bind()
+
+    private val origin get() = Point(0,0)
 
     private fun parse(line: String) =
         with(line.split(" ")) {
@@ -27,8 +33,7 @@ class Day09(testing: Boolean = false) : DaySolutions(9, testing) {
     }
 
     class Rope(
-        private val head: Point = Point(0, 0),
-        private val tail: Point = Point(0, 0),
+        private val knots: List<Point>,
         val visited: Set<Point> = setOf(),
     ) {
         fun move(motion: Motion): Rope =
@@ -42,9 +47,13 @@ class Day09(testing: Boolean = false) : DaySolutions(9, testing) {
                 "D" -> Point(0, -1)
                 else -> Point(0, 0)
             }
-            val newHead = head + move
-            val newTail = if (tail isToFarFrom newHead) tail + (head - tail).normalized() else tail
-            return Rope(newHead, newTail, visited + newTail)
+            val newHead = knots.first() + move
+
+            val newKnots = knots.drop(1).mapIndexed { i, knot ->
+                val knotAhead = knots[i]
+                if (knot isToFarFrom knotAhead) knot + (knotAhead - knot).normalized() else knot
+            }
+            return Rope(listOf(newHead) + newKnots,visited + newKnots.last())
         }
 
         private infix fun Point.isToFarFrom(other: Point) =
