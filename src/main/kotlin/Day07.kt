@@ -55,7 +55,7 @@ interface FileSystemItem : ParsedItem {
     val size: Int
 }
 
-data class Directory(
+private data class Directory(
     override val name: String,
     var parent: Directory? = null,
     val items: MutableList<FileSystemItem> = mutableListOf()
@@ -82,7 +82,7 @@ class FileSystem {
     fun cd(dir: String) {
         currentDirectory = when (dir) {
             "/" -> root
-            ".." -> currentDirectory?.parent ?: root
+            ".." -> currentDirectory.parent ?: root
             else -> currentDirectory.items.filterIsInstance<Directory>().first { it.name == dir }
         }
     }
