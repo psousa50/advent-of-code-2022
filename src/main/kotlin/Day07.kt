@@ -24,7 +24,6 @@ class Day07(testing: Boolean = false) : DaySolutions(7, testing) {
             .toList().minByOrNull { it.size }!!
             .size
             .bind()
-
     }
 
     private fun process(fileSystem: FileSystem, item: ParsedItem): FileSystem {
@@ -51,7 +50,6 @@ interface Command
 class CdCommand(val directory: String) : Command, ParsedItem
 class Ignore : Command, ParsedItem
 
-
 interface FileSystemItem : ParsedItem {
     val name: String
     val size: Int
@@ -63,6 +61,7 @@ data class Directory(
     val items: MutableList<FileSystemItem> = mutableListOf()
 ) : FileSystemItem {
     override val size get() = items.sumOf { it.size }
+
     fun add(item: FileSystemItem) {
         if (item is Directory) item.parent = this
         items.add(item)
