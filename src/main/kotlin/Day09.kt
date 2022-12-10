@@ -28,8 +28,8 @@ class Day09(testing: Boolean = false) : DaySolutions(9, testing) {
     data class Point(val x: Int, val y: Int) {
         operator fun plus(point: Point) = Point(x + point.x, y + point.y)
         operator fun minus(point: Point) = Point(x - point.x, y - point.y)
-        private fun normalized(v: Int) = sign(v.toDouble()).toInt()
-        fun normalized() = Point(normalized(x), normalized(y))
+        private fun intSign(v: Int) = sign(v.toDouble()).toInt()
+        fun normalized() = Point(intSign(x), intSign(y))
     }
 
     class Rope(
