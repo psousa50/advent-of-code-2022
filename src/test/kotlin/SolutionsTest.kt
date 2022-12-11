@@ -59,4 +59,9 @@ class SolutionsTest : DescribeSpec({
             ####.#..#.####.#....####.#..#..##..####.            
         """.trimIndent().trim()
     }
+
+    it("Day 11") {
+        Day11().partOne().intValue shouldBe 54054
+    }
+
 })
