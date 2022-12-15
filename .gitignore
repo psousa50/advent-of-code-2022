@@ -5,3 +5,4 @@ build/
 *.iml
 *.ipr
 .DS_Store
+t.txt
