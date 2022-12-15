@@ -1,43 +1,53 @@
 class Day11(testing: Boolean = false) : DaySolutions(11, testing) {
     override fun partOne(): SolutionResult =
         (0 until 20)
-            .fold(parse(input)) { monkeys, _ -> monkeys.round() }
-            .monkeys.map { it.inspectedItems }
+            .fold(parse(input)) { monkeys, _ -> monkeys.round { divideBy3(it) } }
+            .productOf2MostActiveMonkeys()
+
+    override fun partTwo(): SolutionResult =
+        (0 until 10000)
+            .fold(parse(input)) { monkeys, _ -> monkeys.round { modulus(monkeys.lmcOfDivisibleByValues)(it) } }
+            .productOf2MostActiveMonkeys()
+
+    private fun Monkeys.productOf2MostActiveMonkeys() =
+        this.monkeys.asSequence()
+            .map { it.inspectedItems }
             .sortedDescending()
             .take(2)
             .reduce { product, v -> product * v }
             .bind()
 
+    private fun divideBy3(i: Long) = i / 3
+
+    private fun modulus(m: Int) = { i: Long -> i % m }
+
     private fun parse(input: SolutionInput): Monkeys =
         Monkeys(input.chunked(7) { parseMonkey(it) }.toMutableList())
 
-    private fun parseMonkey(monkeyLines: List<String>): Monkey {
-        return Monkey(
-            parseIntParts(monkeyLines[1], "Starting items:", ", "),
-            parseParts(monkeyLines[2], "Operation: new = old").toOperation(),
+    private fun parseMonkey(monkeyLines: List<String>) =
+        Monkey(
+            parseLongs(monkeyLines[1], "Starting items:", ", "),
+            parseStrings(monkeyLines[2], "Operation: new = old").toOperation(),
             parseInt(monkeyLines[3], "Test: divisible by"),
             parseInt(monkeyLines[4], "If true: throw to monkey"),
             parseInt(monkeyLines[5], "If false: throw to monkey"),
         )
-    }
 
     private fun parseInt(line: String, prefix: String, separator: String = " "): Int =
-        parseIntParts(line, prefix, separator).first()
+        parseLongs(line, prefix, separator).first().toInt()
 
-    private fun parseIntParts(line: String, prefix: String, separator: String = " "): List<Int> =
-        parseParts(line, prefix, separator).map { it.toInt() }
+    private fun parseLongs(line: String, prefix: String, separator: String = " "): List<Long> =
+        parseStrings(line, prefix, separator).map { it.toLong() }
 
-    private fun parseParts(line: String, prefix: String, separator: String = " "): List<String> =
+    private fun parseStrings(line: String, prefix: String, separator: String = " "): List<String> =
         line.trim().drop(prefix.length).trim().split(separator)
 
     class Monkeys(
         var monkeys: MutableList<Monkey>
     ) {
-        fun round(): Monkeys {
-            monkeys.forEach {
-            }
+        fun round(worryLevelNormalizer: WorryLevelNormalizer): Monkeys {
             for (m in monkeys.indices) {
-                val (monkey, throwTo) = monkeys[m].turn()
+                val (monkey, throwTo) = monkeys[m].turn(worryLevelNormalizer)
                 monkeys[m] = monkey
                 throwTo.forEach {
                     monkeys[it.monkeyIndex] = monkeys[it.monkeyIndex].acceptItem(it.itemWorry)
@@ -45,59 +55,65 @@ class Day11(testing: Boolean = false) : DaySolutions(11, testing) {
             }
             return this
         }
+
+        val lmcOfDivisibleByValues get() = monkeys
+            .map { it.divisibleBy }
+            .reduce { p, v -> p * v }
     }
 
     data class Monkey(
-        val itemWorries: List<Int>,
+        val itemWorries: List<Long>,
         val operation: Operation,
-        val divisibleByTest: Int,
+        val divisibleBy: Int,
         val monkeyToThrowOnTrue: Int,
         val monkeyToThrowOnFalse: Int,
-        val inspectedItems: Int = 0
+        val inspectedItems: Long = 0
     ) {
-        fun turn(): Pair<Monkey, List<ThrowTo>> =
+        fun turn(worryLevelNormalizer: WorryLevelNormalizer): Pair<Monkey, List<ThrowTo>> =
             Pair(this.copy(itemWorries = emptyList(), inspectedItems = inspectedItems + itemWorries.size),
                 itemWorries.map {
-                    val worryLevel = operation(it) / 3
+                    val worryLevel = worryLevelNormalizer(operation(it))
                     ThrowTo(
-                        if (worryLevel % divisibleByTest == 0) monkeyToThrowOnTrue else monkeyToThrowOnFalse,
+                        if (worryLevel % divisibleBy == 0L) monkeyToThrowOnTrue else monkeyToThrowOnFalse,
                         worryLevel
                     )
                 })
 
-        fun acceptItem(itemWorry: Int) =
+        fun acceptItem(itemWorry: Long) =
             copy(itemWorries = itemWorries + itemWorry)
     }
 
     data class ThrowTo(
         val monkeyIndex: Int,
-        val itemWorry: Int
+        val itemWorry: Long
     )
 
-    abstract class Operation {
-        abstract operator fun invoke(value: Int): Int
+    interface Operation {
+        operator fun invoke(value: Long): Long
     }
 
-    class Plus(private val operand: Int?) : Operation() {
-        override fun invoke(value: Int) = value + (operand ?: value)
+    class Plus(private val operand: Long?) : Operation {
+        override fun invoke(value: Long) = value + (operand ?: value)
     }
 
-    class Multiply(private val operand: Int?) : Operation() {
-        override fun invoke(value: Int) = value * (operand ?: value)
+    class Times(private val operand: Long?) : Operation {
+        override fun invoke(value: Long) = value * (operand ?: value)
     }
 
-    class Noop : Operation() {
-        override fun invoke(value: Int) = value
+    class Noop : Operation {
+        override fun invoke(value: Long) = value
     }
 
     private fun List<String>.toOperation(): Operation {
         val operator = this[0]
-        val operand = if (this[1] == "old") null else this[1].toInt()
+        val operand = if (this[1] == "old") null else this[1].toLong()
         return when (operator) {
-            "*" -> Day11.Multiply(operand)
-            "+" -> Day11.Plus(operand)
-            else -> Day11.Noop()
+            "+" -> Plus(operand)
+            "*" -> Times(operand)
+            else -> Noop()
         }
     }
 }
+
+typealias WorryLevelNormalizer = (i: Long) -> Long
 
