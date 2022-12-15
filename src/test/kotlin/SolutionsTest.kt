@@ -67,6 +67,7 @@ class SolutionsTest : DescribeSpec({
 
     it("Day 12") {
         Day12().partOne().intValue shouldBe 440
+        Day12().partTwo().intValue shouldBe 439
     }
 
 })

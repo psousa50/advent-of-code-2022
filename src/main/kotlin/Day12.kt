@@ -3,28 +3,55 @@ import kotlin.math.abs
 
 class Day12(testing: Boolean = false) : DaySolutions(12, testing) {
     override fun partOne(): SolutionResult =
-        findShortPath(parse(input))
+        findShortestPathToPeek(parse(input))
             .count()
             .minus(1)
             .bind()
 
-    private fun findShortPath(heightMap: HeightMap): List<Point> {
-        val a = AStar(heightMap.grid, heightMap.startPosition, heightMap.endPosition)
-        return a.shortestPath().map { it.position }
-    }
+    override fun partTwo(): SolutionResult =
+        findShortestPathToBase(parse(input))
+            .count()
+            .minus(1)
+            .bind()
+
+    private fun findShortestPathToPeek(heightMap: HeightMap): List<Point> =
+        AStar(
+            heightMap.grid,
+            heightMap.startPosition,
+            heightMap.endPosition,
+            final = { node -> node.position == heightMap.endPosition },
+            heuristic = { n1, n2 -> n2.position.manhattanDistanceTo(n1.position) },
+            validMove = { n1, n2 -> n1.height - n2.height <= 1 }
+        )
+            .let { it.shortestPath().map { node -> node.position } }
+
+
+    private fun findShortestPathToBase(heightMap: HeightMap): List<Point> =
+        AStar(
+            heightMap.grid,
+            heightMap.endPosition,
+            heightMap.startPosition,
+            final = { node -> node.height == 0 },
+            heuristic = { _, _ -> 0 },
+            validMove = { n1, n2 -> n1.height - n2.height >= -1 }
+        )
+            .let { it.shortestPath().map { node -> node.position } }
 
     private fun parse(input: SolutionInput): HeightMap {
         val startPosition = input.findCharPosition(START_CHAR)
         val endPosition = input.findCharPosition(END_CHAR)
         return HeightMap(
-            input.replace(START_CHAR, 'a').replace(END_CHAR, 'z'),
+            input
+                .replace(START_CHAR, 'a')
+                .replace(END_CHAR, 'z')
+                .map { l -> l.map { it } },
             startPosition,
             endPosition
         )
     }
 
     private data class HeightMap(
-        val grid: SolutionInput,
+        val grid: List<List<Char>>,
         val startPosition: Point,
         val endPosition: Point
     )
@@ -44,51 +71,50 @@ class Day12(testing: Boolean = false) : DaySolutions(12, testing) {
     }
 }
 
-private data class Point(val x: Int, val y: Int) {
+private data class Point(val x: Int, val y: Int, val height: Int = 0) {
     operator fun plus(point: Point) = Point(x + point.x, y + point.y)
     fun manhattanDistanceTo(point: Point): Int = abs(x - point.x) + abs(y - point.y)
     override fun toString() = "($x,$y)"
 }
 
 private data class Node(
-    val parent: Node?,
     val position: Point,
-    val g: Int,
-    val h: Int
+    val height: Int,
+    val parent: Node? = null,
+    val g: Int = 0,
+    val h: Int = 0
 ) {
-    val f: Int = g + h
+    val f = g + h
 
     fun path(): List<Node> = (parent?.path() ?: emptyList()) + this
-    override fun toString() = "$position $g $h"
+    override fun toString() = "$position $height $g $h"
 }
 
 private class AStar(
-    val grid: List<String>,
-    val start: Point,
-    val end: Point
+    val grid: List<List<Char>>,
+    val startPosition: Point,
+    val endPosition: Point,
+    val final: (node: Node) -> Boolean,
+    val heuristic: (n1: Node, n2: Node) -> Int,
+    val validMove: (n1: Node, n2: Node) -> Boolean
 ) {
 
-    var openNodes = PriorityQueue<Node> { n1, n2 -> n1.f.compareTo(n2.f) }
-    var closedNodes = mutableListOf<Node>()
-
-    fun shortestPath(): List<Node> {
-        val startNode = Node(null, start, 0, end.manhattanDistanceTo(start))
-        val openNodes = PriorityQueue<Node> { n1, n2 -> n1.f.compareTo(n2.f) }
+    fun shortestPath(
+    ): List<Node> {
+        val openNodes = PriorityQueue<Node> { n1, n2 -> n1.f - n2.f }
         val closedNodes = mutableListOf<Node>()
-        openNodes.add(startNode)
+        openNodes.add(nodeOf(startPosition))
 
-        println("===================== $start")
-        println("===================== $end")
         var nodeFound: Node? = null
         while (openNodes.isNotEmpty() && nodeFound == null) {
             val node = openNodes.remove()
-            if (node.position == end) {
+            if (final(node)) {
                 nodeFound = node
             } else {
-                for (p in neighbours(node.position)) {
+                for (p in validMoves(node.position)) {
                     if (openNodes.none { it.position == p })
                         if (closedNodes.none { it.position == p }) {
-                            val successor = Node(node, p, node.g + 1, p.manhattanDistanceTo(end))
+                            val successor = nodeOf(p, node, node.g + 1, heuristic(nodeOf(p), nodeOf(endPosition)))
                             openNodes.add(successor)
                         }
                 }
@@ -99,11 +125,20 @@ private class AStar(
         return nodeFound?.path() ?: emptyList()
     }
 
-    private fun inGrid(p: Point) = p.x >= 0 && p.x < grid[0].length && p.y >= 0 && p.y < grid.size
+    private fun nodeOf(
+        position: Point,
+        parent: Node? = null,
+        g: Int = 0,
+        h: Int = 0
+    ): Node {
+        return Node(position, height(position), parent, g, h)
+    }
+
+    private fun inGrid(p: Point) = p.x >= 0 && p.x < grid[0].size && p.y >= 0 && p.y < grid.size
 
     private fun height(p: Point) = grid[p.y][p.x].code - 'a'.code
 
-    private fun neighbours(position: Point) =
+    private fun validMoves(position: Point) =
         sequence {
             for (pd in listOf(
                 Point(1, 0),
@@ -112,7 +147,7 @@ private class AStar(
                 Point(0, -1),
             )) {
                 val newPosition = position + pd
-                if (inGrid(newPosition) && height(newPosition) - height(position) <= 1)
+                if (inGrid(newPosition) && validMove(nodeOf(newPosition), nodeOf(position)))
                     yield(newPosition)
             }
         }
