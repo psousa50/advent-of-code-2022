@@ -8,6 +8,25 @@ class Day13(testing: Boolean = false) : DaySolutions(13, testing) {
             .sum()
             .bind()
 
+    override fun partTwo(): SolutionResult {
+        val divider1 = Packet(listOf(Packet(listOf(IntValue(2)))))
+        val divider2 = Packet(listOf(Packet(listOf(IntValue(6)))))
+        return input
+            .filter { it.isNotEmpty() }
+            .map { PacketParser().parse(it) }
+            .add(divider1)
+            .add(divider2)
+            .sortedBy { it }
+            .mapIndexed { i, packet ->
+                when (packet) {
+                    divider1, divider2 -> i + 1
+                    else -> 1
+                }
+            }
+            .reduce {p, v -> p * v}
+            .bind()
+    }
+
     private fun parsePairOfPackets(lines: List<String>) =
         Pair(
             PacketParser().parse(lines[0]),
@@ -20,24 +39,25 @@ class Day13(testing: Boolean = false) : DaySolutions(13, testing) {
         operator fun get(i: Int): Value
     }
 
-    private data class IntValue(val value: Int) : Value {
+    private data class IntValue(val value: Int) : Value, Comparable<IntValue> {
         override val size get() = 1
         override fun get(i: Int) = this
+
         override fun toPacket() = Packet(listOf(this))
-        operator fun compareTo(other: IntValue) = this.value.compareTo(other.value)
+        override operator fun compareTo(other: IntValue) = this.value.compareTo(other.value)
 
         override fun toString() = value.toString()
     }
 
     private data class Packet(
         val packets: List<Value>
-    ) : Value {
+    ) : Value, Comparable<Packet> {
 
         override val size get() = packets.size
         override fun get(i: Int) = packets[i]
         override fun toPacket() = this
 
-        operator fun compareTo(other: Packet): Int {
+        override operator fun compareTo(other: Packet): Int {
             val firstDifferent = packets.subList(0, min(size, other.size))
                 .mapIndexed { i, v -> Pair(v, other[i]) }
                 .firstOrNull { compare(it) != 0 }
@@ -97,7 +117,8 @@ class Day13(testing: Boolean = false) : DaySolutions(13, testing) {
             packetString.skip(',')
             return Packet(packets)
         }
-
-
     }
+
+    private fun List<Packet>.add(packet: Packet): List<Packet> = this + packet
 }
+
