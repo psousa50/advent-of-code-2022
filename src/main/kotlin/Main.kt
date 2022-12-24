@@ -1,3 +1,6 @@
+import java.lang.Math.round
+import kotlin.math.roundToInt
+
 fun main(args: Array<String>) {
     val runAll = args[0] == "ALL"
 
@@ -23,8 +26,11 @@ fun main(args: Array<String>) {
 }
 
 fun showResult(aoCRunner: AoCRunner, dayNumber: DayNumber, dayPart: DayPart) {
+    val start = System.currentTimeMillis()
     val result = aoCRunner.runPart(dayNumber, dayPart)
+    val end = System.currentTimeMillis()
     println("Day $dayNumber, part $dayPart")
     println("\u001B[32m$result\u001B[0m")
+    println("Duration: ${((end - start.toDouble()) / 10.0).roundToInt() / 100.0}s")
 }
 
