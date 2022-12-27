@@ -29,6 +29,12 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs = listOf("-Xmx=4G")
+}
+
+tasks.withType<Test> {
+    minHeapSize = "1024m"
+    maxHeapSize = "4096m"
 }
 
 application {
