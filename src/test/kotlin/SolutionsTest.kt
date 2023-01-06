@@ -85,4 +85,8 @@ class SolutionsTest : DescribeSpec({
         Day15().partTwo().longValue shouldBe 12555527364986
     }
 
+    it("Day 16") {
+        Day16(true).partOne().intValue shouldBe 1
+    }
+
 })
